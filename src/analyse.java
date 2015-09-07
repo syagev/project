@@ -39,19 +39,32 @@ public class analyse
 					totalFramesRead += numFramesRead;
 					// Here, do something useful with the audio data that's 
 					// now in the audioBytes array...
-					byte[] a = new byte[4];
-					ByteBuffer bb ;
-					int n;
+					
+				
+					short[] shorts = new short[audioBytes.length/2];
+					// to turn bytes to shorts as either big endian or little endian. 
+					ByteBuffer.wrap(audioBytes).order(java.nio.ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(shorts);
+					
+					for(int i = 0; i<shorts.length; i=i+2)
+					{
+						System.out.println(shorts[i]);
+					}
+				
+				/*
+					byte[] a = new byte[2];
+					 ByteBuffer bb;
+					  	Short n;
 					for(int i = 0; i<audioBytes.length; i=i+4)
 					{
-						a[0] = audioBytes[i];
-						a[1] = audioBytes[i+1];
-						a[2] = audioBytes[i+2];
-						a[3] = audioBytes[i+3];
-						bb = ByteBuffer.wrap(a);
-						n = bb.getInt();
+						a[0] = (byte)audioBytes[i];
+						//a[1] = audioBytes[i+1];
+						a[1] = (byte)audioBytes[i+1];
+						//a[3] = audioBytes[i+3];
+						bb = ByteBuffer.wrap(a).order(java.nio.ByteOrder.LITTLE_ENDIAN);
+						n = bb.getShort();
 						System.out.println(n);
 					}
+					*/
 				}
 				/*
 				//check volume
