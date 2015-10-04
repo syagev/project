@@ -1,17 +1,22 @@
 import java.io.File;
 import java.nio.ByteBuffer;
-
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import com.sun.*;
 
-public class analyse 
+import java.util.*;
+
+
+
+
+public class AnalyseAudio
 {
-	protected int getSixteenBitSample(int high, int low) {
+	protected static int getSixteenBitSample(int high, int low)
+	{
 	    return (high << 8) + (low & 0x00ff);
 	} 
 
-	public analyse()
+	public static ArrayList<int[]> Analyse()
 	{
 		int totalFramesRead = 0;
 		File fileIn = new File("C:\\clap.wav");
@@ -38,6 +43,8 @@ public class analyse
 			{
 				int numBytesRead = 0;
 				int numFramesRead = 0;
+				int last = 0;
+				ArrayList<int[]> lst = new ArrayList<int[]>();
 				// Try to read numBytes bytes from the file.
 				while ((numBytesRead = 
 						audioInputStream.read(audioBytes)) != -1) 
@@ -64,59 +71,17 @@ public class analyse
 			            }
 			            sampleIndex++;
 			        }
-			 
-			        	//System.out.println(b==0?"First channel:\n\n":"Second channel:\n\n");
-			        	for(int i = 0 ; i<samples[0].length ; i++)
-			        	{
-			        		System.out.println(samples[1][i]);
-			        	}
-			        
-				/*
-					short[] shorts = new short[audioBytes.length/2];
-					// to turn bytes to shorts as either big endian or little endian. 
-					ByteBuffer.wrap(audioBytes).order(java.nio.ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(shorts);
-					
-					for(int i = 0; i<shorts.length; i=i+2)
-					{
-						System.out.println(shorts[i]);
-					}
-				*/
-				
-				/*
-					byte[] a = new byte[2];
-					 ByteBuffer bb;
-					  	Short n;
-					for(int i = 0; i<audioBytes.length; i=i+4)
-					{
-						a[0] = (byte)audioBytes[i];
-						//a[1] = audioBytes[i+1];
-						a[1] = (byte)audioBytes[i+1];
-						//a[3] = audioBytes[i+3];
-						bb = ByteBuffer.wrap(a).order(java.nio.ByteOrder.LITTLE_ENDIAN);
-						n = bb.getShort();
-						System.out.println(n);
-					}
-					*/
+			        int[] sample = new int[samples[0].length];
+			        for(int i=0; i<samples[0].length; i++)
+			        {
+			        	sample[i]=samples[0][i];
+			        }
+			        	lst.add(last, sample);
+			        	last++;
+			        	//System.out.println(b==0?"First channel:\n\n":"Second channel:\n\n")
 				}
-				/*
-				//check volume
-				long sum = 0;
-			    int len = audioBytes.length;
-			    for (int i=0; i<len; i++) {
-			        sum += audioBytes[i];
-			    }
-			    double average = (double)sum/len;
-
-			    double sumMeanSquare = 0;;
-			    for (int i=0; i<len; i++) {
-			        double f = audioBytes[i] - average;
-			        sumMeanSquare += f * f;
-			    }
-			    double averageMeanSquare = sumMeanSquare/len;
-			    double rootMeanSquare = Math.sqrt(averageMeanSquare);
-
-			    System.out.println(rootMeanSquare);
-			    */
+				return lst;  
+			
 			}
 			catch (Exception e) 
 			{ 
@@ -127,10 +92,20 @@ public class analyse
 		{ 
 			System.out.println(ex);
 		}
-	  
+		return null;		
 }
 	public static void main(String[] args) 
 	{
-		analyse pl = new analyse();
+		ArrayList<int[]> lst = Analyse();
+		int [] arr;
+		for(int i=0; i<lst.size() ; i++)
+        {	
+        	arr= lst.get(i);
+        	for(int b=0; b<arr.length; b++)
+        	{
+        		System.out.println(arr[b]);
+        	}
+        }
 	}
 }
+
