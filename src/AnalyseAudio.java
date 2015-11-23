@@ -6,104 +6,116 @@ import com.sun.*;
 
 import java.util.*;
 
-
-
-
 public class AnalyseAudio
-{
-	protected static int getSixteenBitSample(int high, int low)
+{	
+	public static int NumOfDigits(int x)
 	{
-	    return (high << 8) + (low & 0x00ff);
-	} 
-
-	public static ArrayList<int[]> Analyse()
-	{
-		int totalFramesRead = 0;
-		File fileIn = new File("C:\\clap.wav");
-		try
+		int n = 0;
+		while(x!=0)
 		{
-			AudioInputStream audioInputStream = 
-					AudioSystem.getAudioInputStream(fileIn);
-			int bytesPerFrame = 
-					audioInputStream.getFormat().getFrameSize();
-			int frameLength = (int) audioInputStream.getFrameLength();
-			int channels = audioInputStream.getFormat().getChannels();
-			int sampleSize = audioInputStream.getFormat().getSampleSizeInBits();
-			boolean bigEndian = audioInputStream.getFormat().isBigEndian();
-			if (bytesPerFrame == AudioSystem.NOT_SPECIFIED) 
-			{
-				// some audio formats may have unspecified frame size
-				// in that case we may read any amount of bytes
-				bytesPerFrame = 1;
-			} 
-			// Set an arbitrary buffer size of 1024 frames.
-			int numBytes = 1024 * bytesPerFrame; 
-			byte[] audioBytes = new byte[numBytes];
-			try 
-			{
-				int numBytesRead = 0;
-				int numFramesRead = 0;
-				int last = 0;
-				ArrayList<int[]> lst = new ArrayList<int[]>();
-				// Try to read numBytes bytes from the file.
-				while ((numBytesRead = 
-						audioInputStream.read(audioBytes)) != -1) 
-				{
-					// Calculate the number of frames actually read.
-					numFramesRead = numBytesRead / bytesPerFrame;
-					totalFramesRead += numFramesRead;
-					// Here, do something useful with the audio data that's 
-					// now in the audioBytes array...
-					int[][] samples = new int[channels][frameLength];
-
-			        int sampleIndex = 0;
-			        for (int t = 0; t < audioBytes.length;)
-			        {
-			            for (int channel = 0; channel < channels; channel++) 
-			            {
-			                int low = (int) audioBytes[t];
-			                t++;
-			                int high = (int) audioBytes[t];
-			                t++;
-			                int sample = getSixteenBitSample(high, low);
-			                // Sample is a 16 bit consists of the 8-bit of the high and low bytes
-			                samples[channel][sampleIndex] = sample;
-			            }
-			            sampleIndex++;
-			        }
-			        int[] sample = new int[samples[0].length];
-			        for(int i=0; i<samples[0].length; i++)
-			        {
-			        	sample[i]=samples[0][i];
-			        }
-			        	lst.add(last, sample);
-			        	last++;
-			        	//System.out.println(b==0?"First channel:\n\n":"Second channel:\n\n")
-				}
-				return lst;  
-			
-			}
-			catch (Exception e) 
-			{ 
-				System.out.println(e);
-			}
-	  } 
-		catch (Exception ex)
-		{ 
-			System.out.println(ex);
+			x= x/10;
+			n++;
 		}
-		return null;		
-}
+		return n;
+	}
+	public static int BiggestDigit(int x)
+	{
+		int n = 0;
+		while(x > 0)
+		{
+			if(x<10)
+				n = x;
+			x= x/10;
+		}
+		return n;
+	}
+	public static boolean Similar(int a,int b)
+	{
+		if(a>900 && b>900)
+		{	
+			int aNum = NumOfDigits(a);
+			int bNum = NumOfDigits(b);
+			if(aNum == bNum)
+			{
+				int a1 = BiggestDigit(a);
+				int b1 = BiggestDigit(b);
+				if((a1 == b1 || a1 == (b1+1) || a1 == (b1-1)))
+				{
+					return true;
+				}
+				return false;
+			}
+			else if(aNum == (bNum+1))
+			{
+				if((aNum == 1) && (bNum ==9))
+					return true;
+				return false;
+			}
+			else if(aNum == (bNum-1))
+			{
+				if((aNum == 9) && (bNum ==1))
+					return true;
+				return false;
+			}
+			return false;	
+		}
+		return false;
+	}
 	public static void main(String[] args) 
 	{
-		ArrayList<int[]> lst = Analyse();
+		GraphingAudio g = new GraphingAudio();
+		ArrayList<int[]> lst = g.getList(); 
+		int [] preArr;
 		int [] arr;
+		for(int i=0; i<lst.size() ; i++)
+		{	
+			arr= lst.get(i);
+			System.out.println(arr[0]+ "\n"+arr[1]+ "\n"+arr[2]+ "\n"+arr[3]+ "\n"+arr[4]+ "\n"+arr[5]);
+        }
+		int [] arr2;
+		int [] arr3;
+		int [] arr4;
 		for(int i=0; i<lst.size() ; i++)
         {	
         	arr= lst.get(i);
-        	for(int b=0; b<arr.length; b++)
+        	if(Similar(arr[0], arr[1])&& Similar(arr[0], arr[2])&&Similar(arr[0], arr[3])&&Similar(arr[0], arr[4])&&Similar(arr[0], arr[5]))
         	{
-        		System.out.println(arr[b]);
+        		arr2= lst.get(i+1);
+        		if(Similar(arr2[0], arr2[1])&& Similar(arr2[0], arr2[2])&&Similar(arr2[0], arr2[3])&&Similar(arr2[0], arr2[4])&&Similar(arr2[0], arr2[5]))
+            	{
+            		arr3= lst.get(i+2);
+            		if(Similar(arr3[0], arr3[1])&& Similar(arr3[0], arr3[2])&&Similar(arr3[0], arr3[3])&&Similar(arr3[0], arr3[4])&&Similar(arr3[0], arr3[5]))
+            		{
+            			arr4= lst.get(i+3);
+            			if(arr4[0]<(arr3[5]/2+100)&&arr4[1]<(arr3[5]/2+100)&&arr4[2]<(arr3[5]/2+100)&&arr4[3]<(arr3[5]/2+100)&&arr4[4]<(arr3[5]/2+100)&&arr4[5]<(arr3[5]/2+100))
+            			{
+            				preArr = lst.get(i-1);
+                			if(!Similar(arr[0], preArr[0]) && !Similar(arr[0], preArr[1])&& !Similar(arr[0], preArr[2])&& !Similar(arr[0], preArr[3])&& !Similar(arr[0], preArr[4])&& !Similar(arr[0], preArr[5]))
+                			{
+                				i=i+2;
+                				System.out.println("clap!");
+                			}
+            			}
+            		}
+            		else if(arr3[0]<(arr2[5]/2+100)&&arr3[1]<(arr2[5]/2+100)&&arr3[2]<(arr2[5]/2+100)&&arr3[3]<(arr2[5]/2+100)&&arr3[4]<(arr2[5]/2+100)&&arr3[5]<(arr2[5]/2+100))
+                	{
+            			preArr = lst.get(i-1);
+            			if(!Similar(arr[0], preArr[0]) && !Similar(arr[0], preArr[1])&& !Similar(arr[0], preArr[2])&& !Similar(arr[0], preArr[3])&& !Similar(arr[0], preArr[4])&& !Similar(arr[0], preArr[5]))
+            			{
+            				i++;
+            				System.out.println("clap!");
+            			}
+                	}
+            		
+            	}
+        		else if(arr2[0]<(arr[5]/2+100)&&arr2[1]<(arr[5]/2+100)&&arr2[2]<(arr[5]/2+100)&&arr2[3]<(arr[5]/2+100)&&arr2[4]<(arr[5]/2+100)&&arr2[5]<(arr[5]/2+100))
+        		{
+        			preArr = lst.get(i-1);
+        			if(!Similar(arr[0], preArr[0]) && !Similar(arr[0], preArr[1])&& !Similar(arr[0], preArr[2])&& !Similar(arr[0], preArr[3])&& !Similar(arr[0], preArr[4])&& !Similar(arr[0], preArr[5]))
+        			{
+        				System.out.println("clap!");
+        			}
+        		}
         	}
         }
 	}
