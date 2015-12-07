@@ -17,7 +17,7 @@ public class GraphingAudio
 	public GraphingAudio()
 	{
 		int totalFramesRead = 0;
-		File fileIn = new File("C:\\clap5.wav");
+		File fileIn = new File("C:\\track56.wav");
 		try
 		{
 			AudioInputStream audioInputStream = 
@@ -52,8 +52,7 @@ public class GraphingAudio
 					totalFramesRead += numFramesRead;
 					// Here, do something useful with the audio data that's 
 					// now in the audioBytes array...
-					int[][] samples = new int[channels][frameLength];
-
+					int[][] samples = new int[channels][audioBytes.length/4];
 			        int sampleIndex = 0;
 			        for (int t = 0; t < audioBytes.length;)
 			        {
@@ -92,7 +91,7 @@ public class GraphingAudio
 }
 	public ArrayList<int[]> getList()
 	{
-		return lst;
+		return this.lst;
 	}
 }
 
