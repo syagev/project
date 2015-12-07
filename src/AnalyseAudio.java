@@ -105,7 +105,7 @@ public class AnalyseAudio
 			d= (arr[600]+arr[601]+arr[602]+arr[603]+arr[604]+arr[605])/6;
 			e= (arr[800]+arr[801]+arr[802]+arr[803]+arr[804]+arr[805])/6;
 			f= (arr[1000]+arr[1001]+arr[1002]+arr[1003]+arr[1004]+arr[1005])/6;
-			System.out.println(a+ "\n"+b+ "\n"+c+ "\n"+d+ "\n"+e+ "\n"+f);
+			//System.out.println(a+ "\n"+b+ "\n"+c+ "\n"+d+ "\n"+e+ "\n"+f);
 			if(a>700 && b>700 && c>700 && d>700 && e>700 && f>700)
 			{
 				arr2= lst.get(i+1);
